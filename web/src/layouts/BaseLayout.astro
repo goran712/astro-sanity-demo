@@ -1,0 +1,60 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { locales, defaultLocale } from '../lib/i18n';
+
+interface Props {
+  lang: string;
+  title: string;
+  description?: string;
+  // Path of the page inside a locale, e.g. "" (homepage) or "about". Used for hreflang + switcher.
+  path?: string;
+}
+const { lang, title, description, path = '' } = Astro.props;
+
+// Absolute URLs are required for hreflang; they need `site` in astro.config.mjs.
+const urlFor = (locale: string) => {
+  const relative = getRelativeLocaleUrl(locale, path);
+  return Astro.site ? new URL(relative, Astro.site).href : relative;
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {locales.map((locale) => <link rel="alternate" hreflang={locale} href={urlFor(locale)} />)}
+    <link rel="alternate" hreflang="x-default" href={urlFor(defaultLocale)} />
+  </head>
+  <body>
+    <header class="gd-site-header">
+      <nav class="gd-lang-switcher" aria-label="Language">
+        <ul class="gd-lang-switcher__list">
+          {
+            locales.map((locale) => (
+              <li class="gd-lang-switcher__item">
+                <a
+                  class="gd-lang-switcher__link"
+                  href={getRelativeLocaleUrl(locale, path)}
+                  hreflang={locale}
+                  lang={locale}
+                  aria-current={locale === lang ? 'page' : undefined}
+                >
+                  {locale.toUpperCase()}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </header>
+    <main class="gd-main">
+      <slot />
+    </main>
+  </body>
+</html>

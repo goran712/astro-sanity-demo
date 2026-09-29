@@ -1,0 +1,28 @@
+---
+interface Props {
+  heading?: string;
+  items?: { _id: string; name: string; role?: string; quote: string }[];
+}
+const { heading, items = [] } = Astro.props;
+---
+
+<section class="gd-testimonials">
+  {heading && <h2 class="gd-testimonials__title">{heading}</h2>}
+  <ul class="gd-testimonials__list">
+    {
+      items.map((item) => (
+        <li class="gd-testimonials__item">
+          <figure class="gd-testimonials__figure">
+            <blockquote class="gd-testimonials__quote">
+              <p>{item.quote}</p>
+            </blockquote>
+            <figcaption class="gd-testimonials__author">
+              <span class="gd-testimonials__name">{item.name}</span>
+              {item.role && <span class="gd-testimonials__role">{item.role}</span>}
+            </figcaption>
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</section>

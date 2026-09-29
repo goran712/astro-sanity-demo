@@ -1,0 +1,15 @@
+---
+interface Props {
+  heading: string;
+  text?: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+}
+const { heading, text, ctaLabel, ctaUrl } = Astro.props;
+---
+
+<section class="gd-hero">
+  <h1 class="gd-hero__title">{heading}</h1>
+  {text && <p class="gd-hero__text">{text}</p>}
+  {ctaLabel && ctaUrl && <a class="gd-hero__cta" href={ctaUrl}>{ctaLabel}</a>}
+</section>

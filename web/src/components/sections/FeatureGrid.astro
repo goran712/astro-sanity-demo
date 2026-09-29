@@ -1,0 +1,21 @@
+---
+interface Props {
+  heading?: string;
+  items?: { _key: string; title: string; text?: string }[];
+}
+const { heading, items = [] } = Astro.props;
+---
+
+<section class="gd-feature-grid">
+  {heading && <h2 class="gd-feature-grid__title">{heading}</h2>}
+  <ul class="gd-feature-grid__list">
+    {
+      items.map((item) => (
+        <li class="gd-feature-grid__item">
+          <h3 class="gd-feature-grid__item-title">{item.title}</h3>
+          {item.text && <p class="gd-feature-grid__item-text">{item.text}</p>}
+        </li>
+      ))
+    }
+  </ul>
+</section>

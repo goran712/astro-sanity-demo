@@ -1,0 +1,27 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionRenderer from '../../components/sections/SectionRenderer.astro';
+import { sanity } from '../../lib/sanity';
+import { PAGE_BY_SLUG_QUERY, ALL_SLUGS_QUERY } from '../../lib/queries';
+import { locales } from '../../lib/i18n';
+
+// Every page except "home" (served by index.astro), once per language.
+export const getStaticPaths = (async () => {
+  const slugs: string[] = await sanity.fetch(ALL_SLUGS_QUERY);
+  const paths = slugs.filter((slug) => slug !== 'home').flatMap((slug) => locales.map((lang) => ({ slug, lang })));
+  return Promise.all(
+    paths.map(async ({ slug, lang }) => {
+      const page = await sanity.fetch(PAGE_BY_SLUG_QUERY, { slug, lang });
+      return { params: { lang, slug }, props: { page } };
+    }),
+  );
+}) satisfies GetStaticPaths;
+
+const { lang, slug } = Astro.params;
+const { page } = Astro.props;
+---
+
+<BaseLayout lang={lang} title={page.seoTitle} description={page.description} path={slug}>
+  <SectionRenderer sections={page.sections} />
+</BaseLayout>

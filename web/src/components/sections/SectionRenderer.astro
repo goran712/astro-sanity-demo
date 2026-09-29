@@ -1,0 +1,32 @@
+---
+import Hero from './Hero.astro';
+import FeatureGrid from './FeatureGrid.astro';
+import Testimonials from './Testimonials.astro';
+import Faq from './Faq.astro';
+import CustomCode from './CustomCode.astro';
+
+interface Props {
+  sections?: { _key: string; _type: string; [field: string]: any }[];
+}
+const { sections = [] } = Astro.props;
+
+// Sanity section _type -> Astro component
+const components: Record<string, any> = {
+  hero: Hero,
+  featureGrid: FeatureGrid,
+  testimonialsSection: Testimonials,
+  faq: Faq,
+  customCode: CustomCode,
+};
+---
+
+{
+  sections.map(({ _key, _type, ...props }) => {
+    const Component = components[_type];
+    if (!Component) {
+      console.warn(`SectionRenderer: no component for section type "${_type}"`);
+      return null;
+    }
+    return <Component {...props} />;
+  })
+}

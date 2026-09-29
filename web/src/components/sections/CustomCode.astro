@@ -1,0 +1,13 @@
+---
+interface Props {
+  html?: string;
+  css?: string;
+  js?: string; // not rendered yet
+}
+const { html, css } = Astro.props;
+---
+
+<div class="gd-custom-code">
+  {css && <style is:inline set:html={css} />}
+  {html && <Fragment set:html={html} />}
+</div>

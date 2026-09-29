@@ -1,0 +1,26 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionRenderer from '../../components/sections/SectionRenderer.astro';
+import { sanity } from '../../lib/sanity';
+import { PAGE_BY_SLUG_QUERY } from '../../lib/queries';
+import { locales } from '../../lib/i18n';
+
+// Homepage: the page whose slug is "home", once per language.
+export const getStaticPaths = (async () => {
+  return Promise.all(
+    locales.map(async (lang) => {
+      const page = await sanity.fetch(PAGE_BY_SLUG_QUERY, { slug: 'home', lang });
+      if (!page) throw new Error('No published page with slug "home" in Sanity.');
+      return { params: { lang }, props: { page } };
+    }),
+  );
+}) satisfies GetStaticPaths;
+
+const { lang } = Astro.params;
+const { page } = Astro.props;
+---
+
+<BaseLayout lang={lang} title={page.seoTitle} description={page.description}>
+  <SectionRenderer sections={page.sections} />
+</BaseLayout>
