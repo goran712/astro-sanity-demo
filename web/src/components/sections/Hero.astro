@@ -9,7 +9,79 @@ const { heading, text, ctaLabel, ctaUrl } = Astro.props;
 ---
 
 <section class="gd-hero">
-  <h1 class="gd-hero__title">{heading}</h1>
-  {text && <p class="gd-hero__text">{text}</p>}
-  {ctaLabel && ctaUrl && <a class="gd-hero__cta" href={ctaUrl}>{ctaLabel}</a>}
+  <div class="gd-container gd-hero__inner">
+    <h1 class="gd-hero__title">{heading}</h1>
+    {text && <p class="gd-hero__text">{text}</p>}
+    {ctaLabel && ctaUrl && <a class="gd-hero__cta" href={ctaUrl}>{ctaLabel}</a>}
+  </div>
 </section>
+
+<style>
+  .gd-hero {
+    padding-block: var(--gd-space-section);
+  }
+
+  .gd-hero__inner {
+    display: grid;
+    justify-items: start;
+    gap: var(--gd-space-md);
+  }
+
+  /* Short accent bar above the title: the page's one recurring signature. */
+  .gd-hero__title::before {
+    content: '';
+    display: block;
+    inline-size: var(--gd-accent-bar-width);
+    block-size: var(--gd-accent-bar-height);
+    margin-block-end: var(--gd-space-md);
+    background: var(--gd-color-accent);
+    border-radius: var(--gd-radius-pill);
+  }
+
+  .gd-hero__title {
+    max-inline-size: var(--gd-measure-title);
+  }
+
+  .gd-hero__text {
+    max-inline-size: var(--gd-measure-text);
+    font-size: var(--gd-text-lg);
+    color: var(--gd-color-ink-muted);
+  }
+
+  .gd-hero__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: var(--gd-tap-target);
+    margin-block-start: var(--gd-space-2xs);
+    padding: var(--gd-space-xs) var(--gd-space-lg);
+    background: var(--gd-color-accent);
+    color: var(--gd-color-on-accent);
+    border-radius: var(--gd-radius-pill);
+    box-shadow: var(--gd-shadow-accent);
+    font-weight: var(--gd-weight-semibold);
+    font-size: var(--gd-text-base);
+    text-decoration: none;
+  }
+
+  .gd-hero__cta:hover {
+    background: var(--gd-color-accent-strong);
+    color: var(--gd-color-on-accent);
+  }
+
+  .gd-hero__cta:focus-visible {
+    border-radius: var(--gd-radius-pill);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .gd-hero__cta {
+      transition:
+        transform var(--gd-duration) var(--gd-ease),
+        background-color var(--gd-duration) var(--gd-ease);
+    }
+
+    .gd-hero__cta:hover {
+      transform: translateY(calc(-1 * var(--gd-space-3xs)));
+    }
+  }
+</style>

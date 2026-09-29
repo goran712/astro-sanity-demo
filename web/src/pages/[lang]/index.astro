@@ -5,6 +5,7 @@ import SectionRenderer from '../../components/sections/SectionRenderer.astro';
 import { sanity } from '../../lib/sanity';
 import { PAGE_BY_SLUG_QUERY } from '../../lib/queries';
 import { locales } from '../../lib/i18n';
+import { getCustomCss } from '../../lib/sections';
 
 // Homepage: the page whose slug is "home", once per language.
 export const getStaticPaths = (async () => {
@@ -21,6 +22,6 @@ const { lang } = Astro.params;
 const { page } = Astro.props;
 ---
 
-<BaseLayout lang={lang} title={page.seoTitle} description={page.description}>
+<BaseLayout lang={lang} title={page.seoTitle} description={page.description} customCss={getCustomCss(page.sections)}>
   <SectionRenderer sections={page.sections} />
 </BaseLayout>

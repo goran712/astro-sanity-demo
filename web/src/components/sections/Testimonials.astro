@@ -7,22 +7,104 @@ const { heading, items = [] } = Astro.props;
 ---
 
 <section class="gd-testimonials">
-  {heading && <h2 class="gd-testimonials__title">{heading}</h2>}
-  <ul class="gd-testimonials__list">
-    {
-      items.map((item) => (
-        <li class="gd-testimonials__item">
-          <figure class="gd-testimonials__figure">
-            <blockquote class="gd-testimonials__quote">
-              <p>{item.quote}</p>
-            </blockquote>
-            <figcaption class="gd-testimonials__author">
-              <span class="gd-testimonials__name">{item.name}</span>
-              {item.role && <span class="gd-testimonials__role">{item.role}</span>}
-            </figcaption>
-          </figure>
-        </li>
-      ))
-    }
-  </ul>
+  <div class="gd-container gd-testimonials__inner">
+    {heading && <h2 class="gd-testimonials__title">{heading}</h2>}
+    <ul class="gd-testimonials__list">
+      {
+        items.map((item) => (
+          <li class="gd-testimonials__item">
+            <figure class="gd-testimonials__figure">
+              <blockquote class="gd-testimonials__quote">
+                <p>{item.quote}</p>
+              </blockquote>
+              <figcaption class="gd-testimonials__author">
+                <span class="gd-testimonials__name">{item.name}</span>
+                {item.role && <span class="gd-testimonials__role">{item.role}</span>}
+              </figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </section>
+
+<style>
+  .gd-testimonials {
+    padding-block: var(--gd-space-section);
+    background: var(--gd-color-bg-alt);
+  }
+
+  .gd-testimonials__inner {
+    container: gd-testimonials / inline-size;
+    display: grid;
+    gap: var(--gd-space-xl);
+  }
+
+  .gd-testimonials__title {
+    max-inline-size: var(--gd-measure-title);
+  }
+
+  .gd-testimonials__list {
+    display: grid;
+    gap: var(--gd-space-md);
+    padding: 0;
+    list-style: none;
+  }
+
+  .gd-testimonials__item {
+    display: grid;
+  }
+
+  .gd-testimonials__figure {
+    display: grid;
+    align-content: space-between;
+    gap: var(--gd-space-md);
+    padding: var(--gd-space-lg);
+    background: var(--gd-color-surface);
+    border-block-start: var(--gd-accent-bar-height) solid var(--gd-color-accent);
+    border-radius: var(--gd-radius-lg);
+    box-shadow: var(--gd-shadow-md);
+  }
+
+  .gd-testimonials__quote {
+    font-family: var(--gd-font-display);
+    font-size: var(--gd-text-lg);
+    line-height: var(--gd-leading-snug);
+  }
+
+  .gd-testimonials__author {
+    display: grid;
+    gap: var(--gd-space-3xs);
+    font-size: var(--gd-text-sm);
+  }
+
+  .gd-testimonials__name {
+    font-weight: var(--gd-weight-bold);
+  }
+
+  .gd-testimonials__role {
+    color: var(--gd-color-ink-muted);
+  }
+
+  /* Container query lengths can't use custom properties: 40rem / 64rem are literal. */
+  @container gd-testimonials (min-width: 40rem) {
+    .gd-testimonials__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gd-testimonials__item:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @container gd-testimonials (min-width: 64rem) {
+    .gd-testimonials__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .gd-testimonials__item:last-child:nth-child(odd) {
+      grid-column: auto;
+    }
+  }
+</style>

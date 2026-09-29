@@ -7,15 +7,120 @@ const { heading, items = [] } = Astro.props;
 ---
 
 <section class="gd-faq">
-  {heading && <h2 class="gd-faq__title">{heading}</h2>}
-  <div class="gd-faq__list">
-    {
-      items.map((item) => (
-        <details class="gd-faq__item">
-          <summary class="gd-faq__question">{item.question}</summary>
-          <p class="gd-faq__answer">{item.answer}</p>
-        </details>
-      ))
-    }
+  <div class="gd-container gd-faq__inner">
+    <div class="gd-faq__layout">
+      {heading && <h2 class="gd-faq__title">{heading}</h2>}
+      <div class="gd-faq__list">
+        {
+          items.map((item) => (
+            <details class="gd-faq__item">
+              <summary class="gd-faq__question">{item.question}</summary>
+              <p class="gd-faq__answer">{item.answer}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
   </div>
 </section>
+
+<style>
+  .gd-faq {
+    padding-block: var(--gd-space-section);
+  }
+
+  .gd-faq__inner {
+    container: gd-faq / inline-size;
+  }
+
+  .gd-faq__layout {
+    display: grid;
+    gap: var(--gd-space-xl);
+    align-items: start;
+  }
+
+  .gd-faq__title {
+    max-inline-size: var(--gd-measure-title);
+  }
+
+  .gd-faq__list {
+    border-block-start: var(--gd-border-width) solid var(--gd-color-border);
+  }
+
+  .gd-faq__item {
+    border-block-end: var(--gd-border-width) solid var(--gd-color-border);
+    interpolate-size: allow-keywords;
+  }
+
+  .gd-faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gd-space-md);
+    min-block-size: var(--gd-tap-target);
+    padding-block: var(--gd-space-sm);
+    font-family: var(--gd-font-display);
+    font-size: var(--gd-text-lg);
+    font-weight: var(--gd-weight-bold);
+    line-height: var(--gd-leading-snug);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .gd-faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Custom marker: a plus drawn with two gradients; rotates into a cross when open. */
+  .gd-faq__question::after {
+    content: '';
+    flex: none;
+    inline-size: var(--gd-space-sm);
+    block-size: var(--gd-space-sm);
+    color: var(--gd-color-accent);
+    background:
+      linear-gradient(currentColor, currentColor) center / 100% var(--gd-border-width-thick) no-repeat,
+      linear-gradient(currentColor, currentColor) center / var(--gd-border-width-thick) 100% no-repeat;
+  }
+
+  .gd-faq__item[open] > .gd-faq__question::after {
+    transform: rotate(45deg);
+  }
+
+  .gd-faq__question:hover {
+    color: var(--gd-color-accent-strong);
+  }
+
+  .gd-faq__answer {
+    max-inline-size: var(--gd-measure-text);
+    padding-block-end: var(--gd-space-md);
+    color: var(--gd-color-ink-muted);
+  }
+
+  /* Smooth open/close where ::details-content is supported; instant elsewhere. */
+  @media (prefers-reduced-motion: no-preference) {
+    .gd-faq__question::after {
+      transition: transform var(--gd-duration) var(--gd-ease);
+    }
+
+    .gd-faq__item::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size var(--gd-duration) var(--gd-ease),
+        content-visibility var(--gd-duration) allow-discrete;
+    }
+
+    .gd-faq__item[open]::details-content {
+      block-size: auto;
+    }
+  }
+
+  /* Container query lengths can't use custom properties: 56rem is literal. */
+  @container gd-faq (min-width: 56rem) {
+    .gd-faq__layout {
+      grid-template-columns: 1fr 2fr;
+      gap: var(--gd-space-2xl);
+    }
+  }
+</style>

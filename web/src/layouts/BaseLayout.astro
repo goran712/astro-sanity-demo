@@ -1,6 +1,8 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { locales, defaultLocale } from '../lib/i18n';
+import { locales, defaultLocale, siteName, ui, type Locale } from '../lib/i18n';
+import '../styles/tokens.css';
+import '../styles/base.css';
 
 interface Props {
   lang: string;
@@ -8,8 +10,11 @@ interface Props {
   description?: string;
   // Path of the page inside a locale, e.g. "" (homepage) or "about". Used for hreflang + switcher.
   path?: string;
+  // CSS from Custom Code sections, rendered in <head>.
+  customCss?: string[];
 }
-const { lang, title, description, path = '' } = Astro.props;
+const { lang, title, description, path = '', customCss = [] } = Astro.props;
+const strings = ui[lang as Locale];
 
 // Absolute URLs are required for hreflang; they need `site` in astro.config.mjs.
 const urlFor = (locale: string) => {
@@ -30,31 +35,135 @@ const urlFor = (locale: string) => {
     {description && <meta name="description" content={description} />}
     {locales.map((locale) => <link rel="alternate" hreflang={locale} href={urlFor(locale)} />)}
     <link rel="alternate" hreflang="x-default" href={urlFor(defaultLocale)} />
+    {customCss.map((css) => <style is:inline set:html={css} />)}
   </head>
   <body>
+    <a class="gd-skip-link" href="#main">{strings.skipToContent}</a>
     <header class="gd-site-header">
-      <nav class="gd-lang-switcher" aria-label="Language">
-        <ul class="gd-lang-switcher__list">
-          {
-            locales.map((locale) => (
-              <li class="gd-lang-switcher__item">
-                <a
-                  class="gd-lang-switcher__link"
-                  href={getRelativeLocaleUrl(locale, path)}
-                  hreflang={locale}
-                  lang={locale}
-                  aria-current={locale === lang ? 'page' : undefined}
-                >
-                  {locale.toUpperCase()}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
+      <div class="gd-container gd-site-header__inner">
+        <a class="gd-site-header__brand" href={getRelativeLocaleUrl(lang)}>{siteName}</a>
+        <nav class="gd-lang-switcher" aria-label={strings.language}>
+          <ul class="gd-lang-switcher__list">
+            {
+              locales.map((locale) => (
+                <li>
+                  <a
+                    class="gd-lang-switcher__link"
+                    href={getRelativeLocaleUrl(locale, path)}
+                    hreflang={locale}
+                    lang={locale}
+                    aria-current={locale === lang ? 'page' : undefined}
+                  >
+                    {locale.toUpperCase()}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
     </header>
-    <main class="gd-main">
+    <main class="gd-main" id="main">
       <slot />
     </main>
+    <footer class="gd-site-footer">
+      <div class="gd-container">
+        <p class="gd-site-footer__note">&copy; {new Date().getFullYear()} {siteName}</p>
+      </div>
+    </footer>
   </body>
 </html>
+
+<style>
+  .gd-skip-link {
+    position: absolute;
+    inset-block-start: var(--gd-space-2xs);
+    inset-inline-start: var(--gd-space-2xs);
+    z-index: 1;
+    padding: var(--gd-space-xs) var(--gd-space-sm);
+    background: var(--gd-color-ink);
+    color: var(--gd-color-bg);
+    border-radius: var(--gd-radius-md);
+    transform: translateY(-200%);
+  }
+
+  .gd-skip-link:focus-visible {
+    transform: none;
+  }
+
+  .gd-site-header {
+    padding-block: var(--gd-space-sm);
+  }
+
+  .gd-site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gd-space-sm);
+  }
+
+  .gd-site-header__brand {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--gd-tap-target);
+    color: var(--gd-color-ink);
+    font-family: var(--gd-font-display);
+    font-size: var(--gd-text-xl);
+    font-weight: var(--gd-weight-bold);
+    letter-spacing: var(--gd-tracking-tight);
+    text-decoration: none;
+  }
+
+  .gd-lang-switcher__list {
+    display: flex;
+    gap: var(--gd-space-3xs);
+    padding: var(--gd-space-3xs);
+    list-style: none;
+    border: var(--gd-border-width) solid var(--gd-color-border);
+    border-radius: var(--gd-radius-pill);
+    background: var(--gd-color-surface);
+  }
+
+  .gd-lang-switcher__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: var(--gd-tap-target);
+    min-block-size: var(--gd-space-xl);
+    padding-inline: var(--gd-space-xs);
+    color: var(--gd-color-ink);
+    border-radius: var(--gd-radius-pill);
+    font-size: var(--gd-text-sm);
+    font-weight: var(--gd-weight-semibold);
+    letter-spacing: var(--gd-tracking-wide);
+    text-decoration: none;
+  }
+
+  .gd-lang-switcher__link:hover {
+    background: var(--gd-color-accent-tint);
+    color: var(--gd-color-accent-strong);
+  }
+
+  .gd-lang-switcher__link[aria-current='page'] {
+    background: var(--gd-color-ink);
+    color: var(--gd-color-bg);
+  }
+
+  .gd-lang-switcher__link:focus-visible {
+    border-radius: var(--gd-radius-pill);
+  }
+
+  .gd-main {
+    flex: 1;
+  }
+
+  .gd-site-footer {
+    padding-block: var(--gd-space-xl);
+    border-block-start: var(--gd-border-width) solid var(--gd-color-border);
+  }
+
+  .gd-site-footer__note {
+    color: var(--gd-color-ink-muted);
+    font-size: var(--gd-text-sm);
+  }
+</style>

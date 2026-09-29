@@ -7,15 +7,94 @@ const { heading, items = [] } = Astro.props;
 ---
 
 <section class="gd-feature-grid">
-  {heading && <h2 class="gd-feature-grid__title">{heading}</h2>}
-  <ul class="gd-feature-grid__list">
-    {
-      items.map((item) => (
-        <li class="gd-feature-grid__item">
-          <h3 class="gd-feature-grid__item-title">{item.title}</h3>
-          {item.text && <p class="gd-feature-grid__item-text">{item.text}</p>}
-        </li>
-      ))
-    }
-  </ul>
+  <div class="gd-container gd-feature-grid__inner">
+    {heading && <h2 class="gd-feature-grid__title">{heading}</h2>}
+    <ul class="gd-feature-grid__list">
+      {
+        items.map((item) => (
+          <li class="gd-feature-grid__item">
+            <h3 class="gd-feature-grid__item-title">{item.title}</h3>
+            {item.text && <p class="gd-feature-grid__item-text">{item.text}</p>}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </section>
+
+<style>
+  .gd-feature-grid {
+    padding-block: var(--gd-space-section);
+  }
+
+  /* The grid responds to the width of its own container, not the viewport. */
+  .gd-feature-grid__inner {
+    container: gd-feature-grid / inline-size;
+    display: grid;
+    gap: var(--gd-space-xl);
+  }
+
+  .gd-feature-grid__title {
+    max-inline-size: var(--gd-measure-title);
+  }
+
+  .gd-feature-grid__list {
+    display: grid;
+    gap: var(--gd-space-md);
+    padding: 0;
+    list-style: none;
+    counter-reset: gd-feature;
+  }
+
+  .gd-feature-grid__item {
+    display: grid;
+    align-content: start;
+    gap: var(--gd-space-2xs);
+    padding: var(--gd-space-lg);
+    background: var(--gd-color-surface);
+    border: var(--gd-border-width) solid var(--gd-color-border);
+    border-radius: var(--gd-radius-lg);
+    box-shadow: var(--gd-shadow-sm);
+    counter-increment: gd-feature;
+  }
+
+  /* Decorative counter; the alt-text form hides it from assistive tech. */
+  .gd-feature-grid__item-title::before {
+    content: counter(gd-feature, decimal-leading-zero);
+    content: counter(gd-feature, decimal-leading-zero) / '';
+    display: block;
+    margin-block-end: var(--gd-space-xs);
+    color: var(--gd-color-accent);
+    font-family: var(--gd-font-body);
+    font-size: var(--gd-text-sm);
+    font-weight: var(--gd-weight-bold);
+    letter-spacing: var(--gd-tracking-wide);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gd-feature-grid__item-text {
+    color: var(--gd-color-ink-muted);
+  }
+
+  /* Container query lengths can't use custom properties: 36rem / 64rem are literal. */
+  @container gd-feature-grid (min-width: 36rem) {
+    .gd-feature-grid__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* An odd last card spans the row instead of leaving a gap. */
+    .gd-feature-grid__item:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @container gd-feature-grid (min-width: 64rem) {
+    .gd-feature-grid__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .gd-feature-grid__item:last-child:nth-child(odd) {
+      grid-column: auto;
+    }
+  }
+</style>

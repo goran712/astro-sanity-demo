@@ -1,13 +1,16 @@
 ---
 interface Props {
   html?: string;
-  css?: string;
+  css?: string; // rendered in <head> by BaseLayout (see lib/sections.ts)
   js?: string; // not rendered yet
 }
-const { html, css } = Astro.props;
+const { html } = Astro.props;
 ---
 
-<div class="gd-custom-code">
-  {css && <style is:inline set:html={css} />}
-  {html && <Fragment set:html={html} />}
-</div>
+{
+  html && (
+    <div class="gd-container gd-custom-code">
+      <Fragment set:html={html} />
+    </div>
+  )
+}

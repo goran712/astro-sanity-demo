@@ -1,0 +1,96 @@
+/* Small modern reset + base typography. Tokens only. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+body {
+  min-block-size: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--gd-glow) no-repeat, var(--gd-color-bg);
+  color: var(--gd-color-ink);
+  font-family: var(--gd-font-body);
+  font-size: var(--gd-text-base);
+  line-height: var(--gd-leading-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--gd-font-display);
+  font-weight: var(--gd-weight-bold);
+  line-height: var(--gd-leading-snug);
+  letter-spacing: var(--gd-tracking-tight);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--gd-text-4xl);
+  line-height: var(--gd-leading-tight);
+}
+
+h2 {
+  font-size: var(--gd-text-3xl);
+  line-height: var(--gd-leading-tight);
+}
+
+h3 {
+  font-size: var(--gd-text-xl);
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--gd-color-accent);
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--gd-color-accent-strong);
+}
+
+:focus-visible {
+  outline: var(--gd-focus-width) solid var(--gd-color-focus);
+  outline-offset: var(--gd-focus-offset);
+  border-radius: var(--gd-radius-sm);
+}
+
+/* Shared content wrapper: centred, with a gutter that never causes horizontal scroll. */
+.gd-container {
+  inline-size: min(100% - 2 * var(--gd-gutter), var(--gd-content-width));
+  margin-inline: auto;
+}
