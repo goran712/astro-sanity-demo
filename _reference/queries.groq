@@ -1,0 +1,68 @@
+// Test these in the Studio's Vision tab.
+// Params example: {"slug": "home", "lang": "de"}
+
+// 1) Full page with page-builder sections, language fallback (de -> en)
+//    and dereferenced testimonials
+*[_type == "page" && slug.current == $slug][0]{
+  "title": coalesce(title[$lang], title.en),
+  "slug": slug.current,
+  "description": coalesce(seoDescription[$lang], seoDescription.en),
+  sections[]{
+    _key,
+    _type,
+    _type == "hero" => {
+      "heading": coalesce(heading[$lang], heading.en),
+      "text": coalesce(text[$lang], text.en),
+      "ctaLabel": coalesce(ctaLabel[$lang], ctaLabel.en),
+      ctaUrl
+    },
+    _type == "featureGrid" => {
+      "heading": coalesce(heading[$lang], heading.en),
+      "items": items[]{
+        _key,
+        "title": coalesce(title[$lang], title.en),
+        "text": coalesce(text[$lang], text.en)
+      }
+    },
+    _type == "testimonialsSection" => {
+      "heading": coalesce(heading[$lang], heading.en),
+      "items": items[]->{
+        _id,
+        name,
+        "role": coalesce(role[$lang], role.en),
+        "quote": coalesce(quote[$lang], quote.en)
+      }
+    },
+    _type == "faq" => {
+      "heading": coalesce(heading[$lang], heading.en),
+      "items": items[]{
+        _key,
+        "question": coalesce(question[$lang], question.en),
+        "answer": coalesce(answer[$lang], answer.en)
+      }
+    },
+    _type == "customCode" => { html, css, js }
+  }
+}
+
+// 2) All slugs (for Astro getStaticPaths)
+*[_type == "page" && defined(slug.current)].slug.current
+
+// 3) Featured testimonials, sorted
+*[_type == "testimonial" && featured == true] | order(name asc){
+  name,
+  "quote": coalesce(quote[$lang], quote.en)
+}
+
+// 4) Reverse lookup: on which pages is each testimonial used?
+*[_type == "testimonial"]{
+  name,
+  "usedOn": *[_type == "page" && references(^._id)].slug.current
+}
+
+// 5) Content QA: which pages are missing German translations?
+*[_type == "page"]{
+  "slug": slug.current,
+  "missingDeTitle": !defined(title.de),
+  "sectionsMissingDe": count(sections[defined(heading) && !defined(heading.de)])
+}
