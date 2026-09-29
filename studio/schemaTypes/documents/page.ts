@@ -4,6 +4,7 @@ export const page = defineType({
   name: 'page',
   title: 'Page',
   type: 'document',
+  fieldsets: [{name: 'seo', title: 'SEO', options: {collapsible: true, collapsed: true}}],
   fields: [
     defineField({name: 'title', type: 'localeString', validation: (r) => r.required()}),
     defineField({
@@ -14,9 +15,27 @@ export const page = defineType({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: 'seoTitle',
+      title: 'SEO title',
+      type: 'localeString',
+      fieldset: 'seo',
+      description:
+        'Optional. Falls back to the page title. Recommended: 60 characters or fewer per language.',
+      validation: (r) =>
+        r
+          .custom((value?: {en?: string; de?: string}) => {
+            const tooLong = (['en', 'de'] as const).filter((l) => (value?.[l]?.length ?? 0) > 60)
+            return tooLong.length
+              ? `Longer than 60 characters (${tooLong.join(', ')}); search engines may truncate it.`
+              : true
+          })
+          .warning(),
+    }),
+    defineField({
       name: 'seoDescription',
       title: 'SEO description',
       type: 'localeText',
+      fieldset: 'seo',
       description: 'Recommended: 160 characters or fewer per language.',
       validation: (r) =>
         r

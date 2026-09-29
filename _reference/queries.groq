@@ -6,6 +6,7 @@
 *[_type == "page" && slug.current == $slug][0]{
   "title": coalesce(title[$lang], title.en),
   "slug": slug.current,
+  "seoTitle": coalesce(seoTitle[$lang], seoTitle.en, title[$lang], title.en),
   "description": coalesce(seoDescription[$lang], seoDescription.en),
   sections[]{
     _key,
