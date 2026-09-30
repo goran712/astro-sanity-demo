@@ -31,7 +31,7 @@ Astro/Sanity/GROQ concept worth understanding. Keep explanations short.
 - `page` document: `title`, `slug`, `seoDescription`, `sections[]` (page builder).
 - Sections: `hero`, `featureGrid`, `testimonialsSection`, `faq`, `customCode`.
 - `testimonial` is a document (reused across pages via references); FAQ items are inline objects.
-- Reference implementation of the schemas and queries lives in `_reference/`.
+- Schemas live in `studio/schemaTypes/`; extra GROQ queries for testing in Vision live in `studio/vision-queries.groq`.
 - Convention: the homepage is the `page` whose slug is `home`.
 
 ## GROQ conventions
