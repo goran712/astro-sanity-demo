@@ -1,0 +1,70 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<!-- Static hosts serve 404.html for any unknown URL, so the language is unknown: show both. -->
+<BaseLayout lang="en" title="Page not found · Seite nicht gefunden" noindex>
+  <section class="gd-not-found">
+    <div class="gd-container gd-not-found__inner">
+      <div class="gd-not-found__block" lang="en">
+        <h1 class="gd-not-found__title">Page not found</h1>
+        <p class="gd-not-found__text">The page you are looking for doesn't exist or has moved.</p>
+        <a class="gd-not-found__link" href={getRelativeLocaleUrl('en')}>Go to the English homepage</a>
+      </div>
+      <div class="gd-not-found__block" lang="de">
+        <h2 class="gd-not-found__title">Seite nicht gefunden</h2>
+        <p class="gd-not-found__text">Die gesuchte Seite existiert nicht oder wurde verschoben.</p>
+        <a class="gd-not-found__link" href={getRelativeLocaleUrl('de')}>Zur deutschen Startseite</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .gd-not-found {
+    padding-block: var(--gd-space-section);
+  }
+
+  .gd-not-found__inner {
+    display: grid;
+    gap: var(--gd-space-xl);
+  }
+
+  .gd-not-found__block {
+    display: grid;
+    justify-items: start;
+    gap: var(--gd-space-sm);
+  }
+
+  .gd-not-found__title {
+    max-inline-size: var(--gd-measure-title);
+  }
+
+  .gd-not-found__text {
+    max-inline-size: var(--gd-measure-text);
+    color: var(--gd-color-ink-muted);
+  }
+
+  .gd-not-found__link {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--gd-tap-target);
+    padding: var(--gd-space-xs) var(--gd-space-lg);
+    background: var(--gd-color-accent);
+    color: var(--gd-color-on-accent);
+    border-radius: var(--gd-radius-pill);
+    font-weight: var(--gd-weight-semibold);
+    text-decoration: none;
+  }
+
+  .gd-not-found__link:hover {
+    background: var(--gd-color-accent-strong);
+  }
+
+  @media (min-width: 48em) {
+    .gd-not-found__inner {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

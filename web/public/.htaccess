@@ -1,0 +1,32 @@
+# Scoped to /sanity-demo/ only; safe to live beside WordPress in the parent folder.
+
+# Enable the rewrite engine and anchor relative rules to this folder.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /sanity-demo/
+
+  # 301 redirect the folder root to the default language.
+  RewriteRule ^$ /sanity-demo/en/ [R=301,L]
+</IfModule>
+
+# Serve our own static 404 page instead of WordPress/server default.
+ErrorDocument 404 /sanity-demo/404.html
+
+# Compress text-based responses.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# Cache hashed _astro/ assets for a year; revalidate HTML on every request.
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <If "%{REQUEST_URI} =~ m#^/sanity-demo/_astro/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+
+  # Basic hardening headers.
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

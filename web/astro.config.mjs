@@ -4,6 +4,10 @@ import { defineConfig } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
+  // Deployed in a sub-folder of the main domain; `base` prefixes every generated URL.
+  site: 'https://gorandjordjevic.com',
+  base: '/sanity-demo',
+  trailingSlash: 'always',
   i18n: {
     locales: ['en', 'de'],
     defaultLocale: 'en',
@@ -15,6 +19,7 @@ export default defineConfig({
     },
   },
   redirects: {
-    '/': '/en/',
+    // Redirect targets are used verbatim, so the base must be written out here.
+    '/': '/sanity-demo/en/',
   },
 });

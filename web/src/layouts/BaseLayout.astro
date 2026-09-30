@@ -12,9 +12,14 @@ interface Props {
   path?: string;
   // CSS from Custom Code sections, rendered in <head>.
   customCss?: string[];
+  // Error pages (404) have no canonical URL or language alternates and must not be indexed.
+  noindex?: boolean;
 }
-const { lang, title, description, path = '', customCss = [] } = Astro.props;
+const { lang, title, description, path = '', customCss = [], noindex = false } = Astro.props;
 const strings = ui[lang as Locale];
+
+// BASE_URL is "/sanity-demo/" (trailingSlash: "always"), so it is safe to append file names.
+const base = import.meta.env.BASE_URL;
 
 // Absolute URLs are required for hreflang; they need `site` in astro.config.mjs.
 const urlFor = (locale: string) => {
@@ -29,12 +34,14 @@ const urlFor = (locale: string) => {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="icon" href={`${base}favicon.ico`} />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
-    {locales.map((locale) => <link rel="alternate" hreflang={locale} href={urlFor(locale)} />)}
-    <link rel="alternate" hreflang="x-default" href={urlFor(defaultLocale)} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {!noindex && <link rel="canonical" href={urlFor(lang)} />}
+    {!noindex && locales.map((locale) => <link rel="alternate" hreflang={locale} href={urlFor(locale)} />)}
+    {!noindex && <link rel="alternate" hreflang="x-default" href={urlFor(defaultLocale)} />}
     {customCss.map((css) => <style is:inline set:html={css} />)}
   </head>
   <body>

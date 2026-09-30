@@ -6,13 +6,20 @@ interface Props {
   ctaUrl?: string;
 }
 const { heading, text, ctaLabel, ctaUrl } = Astro.props;
+
+// Editors enter site-internal links as "/path"; prefix them with the deployment base.
+// External (https://…) and protocol-relative (//…) URLs pass through untouched.
+const href =
+  ctaUrl && ctaUrl.startsWith('/') && !ctaUrl.startsWith('//')
+    ? `${import.meta.env.BASE_URL}${ctaUrl.slice(1)}`
+    : ctaUrl;
 ---
 
 <section class="gd-hero">
   <div class="gd-container gd-hero__inner">
     <h1 class="gd-hero__title">{heading}</h1>
     {text && <p class="gd-hero__text">{text}</p>}
-    {ctaLabel && ctaUrl && <a class="gd-hero__cta" href={ctaUrl}>{ctaLabel}</a>}
+    {ctaLabel && ctaUrl && <a class="gd-hero__cta" href={href}>{ctaLabel}</a>}
   </div>
 </section>
 
