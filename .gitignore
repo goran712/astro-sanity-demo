@@ -1,0 +1,33 @@
+# Applies to studio/ and web/ (patterns without a leading slash match at any depth).
+
+# Dependencies
+node_modules/
+
+# Build output and generated files
+dist/
+.astro/
+.sanity/
+*.tsbuildinfo
+deploy.zip
+
+# Environment files (real values never committed; keep the examples)
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs and coverage
+*.log
+logs/
+coverage/
+
+# Keys and certificates
+*.pem
+
+# OS and editor junk
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+*.swp
+*~
