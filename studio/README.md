@@ -1,9 +1,6 @@
-# Sanity Clean Content Studio
+# studio
 
-Congratulations, you have now installed the Sanity Content Studio, an open-source real-time content editing environment connected to the Sanity backend.
-
-Now you can do the following things:
-
-- [Read “getting started” in the docs](https://www.sanity.io/docs/introduction/getting-started?utm_source=readme)
-- [Join the Sanity community](https://www.sanity.io/community/join?utm_source=readme)
-- [Extend and build plugins](https://www.sanity.io/docs/content-studio/extending?utm_source=readme)
+The Sanity Studio: page-builder schemas (`schemaTypes/`) and the Vision tool for testing GROQ.
+Copy `.env.example` to `.env`, then run `npm install`.
+Commands: `npm run dev` (local Studio), `npm run build`. `npm run deploy` publishes the Studio, so run it only on purpose.
+See the [root README](../README.md) for the full project overview.
